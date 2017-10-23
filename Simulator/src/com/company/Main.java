@@ -5,35 +5,40 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
         String memory[] = new String [10] ;
-        String register[]=new String [8];
+        int register[]= new int [8];
         readFile("MachineCode.txt",memory);
 
 
         String binaryRegister[] = new String[memory.length];
         int lengthOfBinary[] = new int [memory.length] ;
-
+        System.out.println("Example Run of Simulator");
         for (int i = 0 ; i < lengthOfBinary.length ;i ++){
             lengthOfBinary[i]=Integer.parseInt(memory[i]);
-            System.out.println(lengthOfBinary[i]);
+            System.out.println("memory["+i+"] = "+memory[i]);
 
-            if(lengthOfBinary[i] >= 0)binaryRegister[i]=Integer.toBinaryString(lengthOfBinary[i]);
+            if(lengthOfBinary[i] >= 10){
+                binaryRegister[i]=Integer.toBinaryString(lengthOfBinary[i]);
+                while(25-binaryRegister[i].length() != 0 ) binaryRegister[i] = "0" + binaryRegister[i] ;
+            }
             else binaryRegister[i] = memory[i];
 
-            while(25-binaryRegister[i].length() != 0 ) binaryRegister[i] = "0" + binaryRegister[i] ;
-
-           // System.out.print(binaryRegister[i] + "("); // binary of machine code
-           // System.out.println(binaryRegister[i].length()+")" + "\n"); // length of binary of machince code
+            //System.out.print(binaryRegister[i] + "("); // binary of machine code
+            //System.out.println(binaryRegister[i].length()+")" + "\n"); // length of binary of machince code
         }
-
-        for(int i =0;i<memory.length;i++){
-
-            String temp = binaryRegister[i].substring(0, 3);
+        int count=0 ;
+        int instruc =1;
+        while (count < binaryRegister.length){
+            printState(memory,register,count);
+            String temp = new String();
+            if(binaryRegister[count].length() == 25){
+                temp = binaryRegister[count].substring(0, 3);
+            }
 
             if(temp.contains("000")){
-                add();
+                add(binaryRegister[count],register);
             } else if(temp.contains("001")){
 
-                nand();
+                nand(binaryRegister[count],register);
             } else if(temp.contains("010")){
 
                 lw();
@@ -47,12 +52,15 @@ public class Main {
 
                 jalr();
             } else if(temp.contains("110")){
-                halt(); //end program
+                System.out.println("machine halted");
+                System.out.println("total of "+ instruc +" instructions executed\n" +
+                        "final state of machine:");
+                break; // halt
 
-            } else if(temp.contains("111")){
-
-                //do nothing
             }
+            //System.out.println(count);
+            count++;
+            instruc++;
         }
     }
 
@@ -106,14 +114,45 @@ public class Main {
         }
     }
 
-    public static void add(){}
-    public static void nand(){}
+    public static void add(String binaryRegister ,int[]register){
+        String rs =  binaryRegister.substring(3, 6) ;
+        String rt =  binaryRegister.substring(6, 9) ;
+        String rd =  binaryRegister.substring(22, 25) ;
+
+        int dxrs = Integer.parseInt(rs, 2);
+        int dxrt = Integer.parseInt(rt, 2);
+        int dxrd = Integer.parseInt(rd, 2);
+
+        register[dxrd] = register[dxrt] + register[dxrs] ;
+
+    }
+    public static void nand(String binaryRegister ,int[]register){
+        String rs =  binaryRegister.substring(3, 6) ;
+        String rt =  binaryRegister.substring(6, 9) ;
+        String rd =  binaryRegister.substring(22, 25) ;
+
+        int dxrs = Integer.parseInt(rs, 2);
+        int dxrt = Integer.parseInt(rt, 2);
+        int dxrd = Integer.parseInt(rd, 2);
+
+
+    }
     public static void lw(){
 
     }
     public static void sw(){}
     public static void beq(){}
     public static void jalr(){}
-    public static void halt(){}
+    public static void printState(String []memory,int []register,int count){
 
+        System.out.println("@@@\n" + "\tpc " + count +"\n\tmemory:");
+        for (int i=0;i<memory.length;i++) {
+            System.out.println("\t\tmem[ "+i+" ] " + memory[i]);
+        }
+        System.out.println("\tregister:");
+        for (int i=0;i<register.length;i++) {
+            System.out.println("\t\treg[ "+i+" ] " + register[i]);
+        }
+        System.out.println("end state");
+    }
 }
