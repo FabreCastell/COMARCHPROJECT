@@ -11,7 +11,7 @@ public class Main {
 
         String binaryRegister[] = new String[memory.length];
         int lengthOfBinary[] = new int [memory.length] ;
-        System.out.println("Example Run of Simulator");
+        System.out.println("Example Run of Simulator\n");
         for (int i = 0 ; i < lengthOfBinary.length ;i ++){
             lengthOfBinary[i]=Integer.parseInt(memory[i]);
             System.out.println("memory["+i+"] = "+memory[i]);
@@ -41,20 +41,24 @@ public class Main {
                 nand(binaryRegister[count],register);
             } else if(temp.contains("010")){
 
-                lw();
+                lw(binaryRegister[count],register,memory,count);
             } else if(temp.contains("011")){
-                sw();
+                sw(binaryRegister[count],register);
 
             } else if(temp.contains("100")){
 
-                beq();
+                count = beq(binaryRegister[count],register,count);
+
             } else if(temp.contains("101")){
 
-                jalr();
+                jalr(binaryRegister[count],register,count);
+
             } else if(temp.contains("110")){
                 System.out.println("machine halted");
                 System.out.println("total of "+ instruc +" instructions executed\n" +
-                        "final state of machine:");
+                        "final state of machine:\n");
+                count++;
+                printState(memory,register,count);
                 break; // halt
 
             }
@@ -137,15 +141,55 @@ public class Main {
 
 
     }
-    public static void lw(){
+    public static void lw(String binaryRegister ,int[]register,String []memory,int count){
+        String rs =  binaryRegister.substring(3, 6) ;
+        String rt =  binaryRegister.substring(6, 9) ;
+        String offset =  binaryRegister.substring(9, 25) ;
+
+        int dxrs = Integer.parseInt(rs, 2);
+        int dxrt = Integer.parseInt(rt, 2);
+        int dxoffset = Integer.parseInt(offset, 2);
+        /*System.out.println(dxrs + " dxrs");
+        System.out.println(dxrt + " dxrt");
+        System.out.println(dxoffset + " dxoffset");*/
+        register[dxrt] = Integer.parseInt(memory[count + dxoffset+dxrs*4]);
 
     }
-    public static void sw(){}
-    public static void beq(){}
-    public static void jalr(){}
+    public static void sw(String binaryRegister ,int[]register){
+        String rs =  binaryRegister.substring(3, 6) ;
+        String rt =  binaryRegister.substring(6, 9) ;
+        String offset =  binaryRegister.substring(9, 25) ;
+
+        int dxrs = Integer.parseInt(rs, 2);
+        int dxrt = Integer.parseInt(rt, 2);
+        int dxoffset = Integer.parseInt(offset, 2);
+    }
+    public static int beq(String binaryRegister ,int[]register,int count){
+        String rs =  binaryRegister.substring(3, 6) ;
+        String rt =  binaryRegister.substring(6, 9) ;
+        String offset =  binaryRegister.substring(9, 25) ;
+
+        //System.out.println(offset +" offset");
+
+        int dxrs = Integer.parseInt(rs, 2);
+        int dxrt = Integer.parseInt(rt, 2);
+        short dxoffset = (short) Integer.parseInt(offset, 2);
+
+        if(register[dxrs] == register[dxrt]) return count+dxoffset;
+        else return count;
+    }
+    public static int jalr(String binaryRegister ,int[]register,int count ){
+        String rs =  binaryRegister.substring(3, 6) ;
+        String rt =  binaryRegister.substring(6, 9) ;
+
+        int dxrs = Integer.parseInt(rs, 2);
+        int dxrt = Integer.parseInt(rt, 2);
+
+        return dxrs;
+    }
     public static void printState(String []memory,int []register,int count){
 
-        System.out.println("@@@\n" + "\tpc " + count +"\n\tmemory:");
+        System.out.println("\n@@@\n" + "\tpc " + count +"\n\tmemory:");
         for (int i=0;i<memory.length;i++) {
             System.out.println("\t\tmem[ "+i+" ] " + memory[i]);
         }
