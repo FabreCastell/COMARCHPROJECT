@@ -140,7 +140,7 @@ public class Proj   {
 
 	public static void main(String[] args) {
 		
-		String path = "D:\\project3\\test1.txt";
+		String path = "test1.txt";
 		File file = new File(path);
 		
 		try {
