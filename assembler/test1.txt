@@ -1,2 +1,1 @@
-	lw	1	2		reg1	
-						
+	lw	3	3	ddd
