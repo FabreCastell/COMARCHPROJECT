@@ -31,13 +31,15 @@ class CheckLabel{
 }
 class CheckInst {
 	public boolean checkInst(String inst) {
-			int index = i;
+			//int index = i;
 			String[] l = inst.split("\t");
 			int out;
 			String in = l[1];
 			if (in.equals("lw") | in.equals("sw") | in.equals("beq")){
 				if(l[2] != null & l[3] != null & l[4] != null){
 					return true;
+				}else{
+					return false;
 				}
 				
 			}else if (in.equals("add") | in.equals("nand")){
@@ -65,6 +67,7 @@ class CheckInstruction {
 			String[] l = inst.split("\t");
 			int out = 0;
 			int op = 0;
+			String in = l[1];
 			if (in.equals("lw") | in.equals("sw") | in.equals("beq")){
 				Itype it = new Itype();
 				out = it.itype(l[2],l[3],l[4]);
@@ -77,7 +80,7 @@ class CheckInstruction {
 				}
 			}else if (in.equals("add") | in.equals("nand")){
 				Rtype rt = new Rtype();
-				out = rt.itype(l[2],l[3],l[4]);
+				out = rt.rtype(l[2],l[3],l[4]);
 				if(in.equals("add")){
 					op = 0;
 				}else{
@@ -85,7 +88,7 @@ class CheckInstruction {
 				}
 			}else if (in.equals("jalr") ){
 				Jtype jt = new Jtype();
-				out = it.itype(l[2],l[3]);
+				out = jt.jtype(l[2],l[3]);
 				op = 5;
 			}else if (in.equals("halt") | in.equals("noop")){
 				out = 0;
@@ -101,6 +104,7 @@ class CheckInstruction {
 }
 class Checkfield{
 	public boolean checkfield(String line) {
+		
 		String[] field = line.split("\t");
 		if (field[1] == null){
 			System.out.println("no instruction");
@@ -108,7 +112,7 @@ class Checkfield{
 		}
 		CheckInst checkin = new CheckInst();
 
-		int x = checkin.checkInst(line);
+		boolean x = checkin.checkInst(line);
 		if (x == false){
 			return false;
 		}else{
@@ -127,7 +131,8 @@ class Seperate {
 
 		//instruction
 		CheckInstruction ins = new CheckInstruction();    
-		ins.checkInstruction(line,i);
+		int sum = ins.checkInstruction(line,i);
+		System.out.println(sum);
 	}  	
 }
 
@@ -144,13 +149,14 @@ public class Proj   {
 			int i=0;
 			while ((line = br.readLine()) != null) {
 				//String[] name = line.split("\t");
-				Checkfield chfield = new Checkfield(); 
-				boolean x = sep.chfield(line); //check field
+				Checkfield chf = new Checkfield(); 
+				boolean x = chf.checkfield(line); //check field
 				if(x == true){
 					Seperate sep = new Seperate();
 					sep.check(line,i); //if correct field turn to checkInst
-				}else{
-					return 0;      //have error exit
+				}else if(x == false){
+					break;
+					//have error exit
 				}
 				i++;
 			}
