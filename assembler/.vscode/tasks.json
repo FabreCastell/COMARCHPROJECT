@@ -3,6 +3,7 @@
       "version": "2.0.0",
     "tasks": [
         {
+<<<<<<< HEAD
             "taskName": "JCOM",
             "command": "java",
             "windows": {
@@ -17,6 +18,23 @@
             "command": "java",
             "windows": {
                 "command": "C:\\Program Files\\Java\\jdk1.8.0_111\\bin\\java.exe"
+=======
+            "taskName": "JAVCompile",
+            "command": "java",
+            "windows": {
+                "command": "C:\\Program Files\\Java\\jdk1.8.0_101\\bin\\javac.exe"
+            },
+            "args": [
+                "${file}"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "JAVRun",
+            "command": "java",
+            "windows": {
+                "command": "C:\\Program Files\\Java\\jdk1.8.0_101\\bin\\java.exe"
+>>>>>>> b526b6268e229b98c681cde536567369050e11b9
             },
             "args": [
                 "${fileBasenameNoExtension}"

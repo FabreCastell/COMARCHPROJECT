@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.*;
 import java.lang.*;
 
+
+
 class Jtype {
 	public int jtype(String a ,String b ) {
 		return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 );
@@ -17,18 +19,41 @@ class Rtype {
 	}
 
 }
+public class CheckLabel{
+	public int checkLabel(String c) {
+		for(int i=0; i<Proj.count; i++){
+			String temp = Proj.label[i].split("\t");
+			if(c.equals(temp[0]) && temp[1].equals(".fill")){
+				return Integer.parseInt(temp[2]);
+			}
+		}
+		throw new ArithmeticException("Label not found!");
+	}
+}
 
 class Itype {
 	public int itype(String a , String b , String c) {
-	return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + (Integer.parseInt(c));	
-	}
-}
-class CheckLabel{
-	public void checkLabel() {
-
 		
-	}
+		if(isInteger(c)){
+			return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + (Integer.parseInt(c));
+		}else
+			return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + (CheckLabel.checkLabel(c));
+		}
+	
+
+	public boolean isInteger(String str) {
+    	if(str == null || str.trim().isEmpty()) {
+       		return false;
+    	}
+    	for (int i = 0; i < str.length(); i++) {
+        	if(!Character.isDigit(str.charAt(i))) {
+            	return false;
+        	} 
+    	}
+    	return true;
+	}	
 }
+
 class CheckInst {
 	public boolean checkInst(String inst) {
 			//int index = i;
@@ -53,13 +78,10 @@ class CheckInst {
 				}
 				
 			}else if (in.equals("halt") | in.equals("noop")){
-				if(l[2] == null & l[3] == null & l[4] == null){
-					return true;
-				}			
-			}		
-		return false;
+					return true;			
+			}
+			throw new ArithmeticException("Instruction doesn't exist!");
 	}
-	
 }
 class CheckInstruction {
 	public int checkInstruction(String inst , int i) {
@@ -97,27 +119,26 @@ class CheckInstruction {
 				}else{
 					op = 7;
 				}
-			}		
+			}
 		return ((op << 22) + out );
 	}
 	
 }
 class Checkfield{
 	public boolean checkfield(String line) {
-		
-		String[] field = line.split("\t");
-		if (field[1] == null){
+		if(line.equals("")){
 			System.out.println("no instruction");
-			return false;
+			return true;
 		}
+		// String[] field = line.split("\t");
+		// if (field[1] == null){
+		// 	System.out.println("no instruction");
+		// 	return false;
+		// }
 		CheckInst checkin = new CheckInst();
 
 		boolean x = checkin.checkInst(line);
-		if (x == false){
-			return false;
-		}else{
-			return true;
-		}
+		return x;
 		
 	}
 }
@@ -137,15 +158,57 @@ class Seperate {
 }
 
 public class Proj   {
+	int count=0;
+	String[] label = new String[count];
 
 	public static void main(String[] args) {
 		
 		String path = "test1.txt";
 		File file = new File(path);
 		
+		
+		
+		int num=0;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
+			while ((line = br.readLine()) != null) {
+				count++;
+			}
+			br.close();
+		
+		
+			System.out.println(count);
+		}catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			String[] inLabel;
+			String[] cLabel;
+			
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line;
+			while ((line = br.readLine()) != null) {
+				label[num] = line;
+				for(int i=0; i<num; i++){
+					inLabel = label[i].split("\t");
+					cLabel = label[num].split("\t");
+					if(inLabel[0].equals(cLabel[0]) && !cLabel[0].equals("")){
+						throw new ArithmeticException("Existed label!");
+					}
+				}
+				num++;
+			}
+			br.close();
+			
+			for(int i=0; i<label.length; i++){
+				System.out.println(label[i]);
+			}
+
+		
+			br = new BufferedReader(new FileReader(file));
 			int i=0;
 			while ((line = br.readLine()) != null) {
 				//String[] name = line.split("\t");
