@@ -48,12 +48,9 @@ class Filltype {
        		return false;
 		}
 		
-		if(str.matches("[a-z]")) return false;
-    	// for (int i = 0; i < str.length(); i++) {
-        // 	if(!Character.isDigit(str.charAt(i))) {
-        //     	return false;
-        // 	} 
-		// }
+		if(str.matches("(.*)[a-z](.*)")) {
+			return false;
+		}
     	return true;
 	}	
 }
@@ -210,7 +207,7 @@ public class Proj   {
 	public static void main(String[] args) {
 	
 
-		String path = "D:\\project1\\test.txt";
+		String path = "test.txt";
 		File file = new File(path);
 		
 		

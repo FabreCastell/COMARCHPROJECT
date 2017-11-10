@@ -71,7 +71,7 @@ public class Main {
     public static String readFile(String what,String [] n){
         String value = "" ;
         try {
-            // อ่านไฟล์ชื่อ textfile.txt
+            
             FileInputStream fstream = new FileInputStream(what);
 
             // Get the object of DataInputStream
@@ -79,7 +79,7 @@ public class Main {
             BufferedReader bf = new BufferedReader(new InputStreamReader(instream));
             String line;
 
-            // อ่านไฟล์ทีละบรรทัด
+            
             int i = 0;
             while ((line = bf.readLine()) != null) {
                 //System.out.println(line);
@@ -87,7 +87,7 @@ public class Main {
                 n[i] = line ;
                 i++;
             }
-            // ปิด input stream
+            
             instream.close();
 
 
@@ -100,17 +100,17 @@ public class Main {
 
     public static void write(String what,String x){
         try {
-            // สร้าง object เพื่อใช้เขียนไฟล์ โดยระบุชื่อไฟล์ที่ต้องการสร้าง
+            
             FileWriter writer = new FileWriter(what);
 
-            // สร้าง object เพื่อใช้เขียนข้อมูลลงไปในไฟล์
+            
             BufferedWriter out = new BufferedWriter(writer);
 
-            // เขียนข้อมูลลงไปในไฟล์
+            
             out.write(x);
 
 
-            // ปิดการเขียนไฟล์
+           
             out.close();
 
         } catch (Exception e) {
