@@ -4,6 +4,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.*;
 import java.lang.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 
 
@@ -19,27 +22,61 @@ class Rtype {
 	}
 
 }
-public class CheckLabel{
-	public int checkLabel(String c) {
+class CheckLabel{
+	public static int checkLabel(String c) {
 		for(int i=0; i<Proj.count; i++){
-			String temp = Proj.label[i].split("\t");
-			if(c.equals(temp[0]) && temp[1].equals(".fill")){
-				return Integer.parseInt(temp[2]);
+			String[] temp = Proj.label[i].split("\t");
+			if(c.equals(temp[0])){
+				return i;
 			}
 		}
 		throw new ArithmeticException("Label not found!");
 	}
 }
 
+class Filltype {
+	public int filltype(String a) {
+		if(isInteger(a)){
+			return (Integer.parseInt(a));
+		}else{
+			return  (CheckLabel.checkLabel(a));
+		}
+	}
+
+	public boolean isInteger(String str) {
+    	if(str == null || str.trim().isEmpty()) {
+       		return false;
+		}
+		
+		if(str.matches("[a-z]")) return false;
+    	// for (int i = 0; i < str.length(); i++) {
+        // 	if(!Character.isDigit(str.charAt(i))) {
+        //     	return false;
+        // 	} 
+		// }
+    	return true;
+	}	
+}
+
+
 class Itype {
 	public int itype(String a , String b , String c) {
-		
 		if(isInteger(c)){
 			return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + (Integer.parseInt(c));
-		}else
-			return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + (CheckLabel.checkLabel(c));
+		}else if(Proj.op == 4){
+			return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + getMinus(CheckLabel.checkLabel(c)-Proj.nowcount-1);
+		}else{
+			return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + getMinus(CheckLabel.checkLabel(c)-Proj.nowcount);
 		}
+	}
+
+
 	
+	public int getMinus(int c){
+		if(c<0){
+			return c+65536;
+		}else return c;
+	}
 
 	public boolean isInteger(String str) {
     	if(str == null || str.trim().isEmpty()) {
@@ -53,7 +90,6 @@ class Itype {
     	return true;
 	}	
 }
-
 class CheckInst {
 	public boolean checkInst(String inst) {
 			//int index = i;
@@ -79,7 +115,9 @@ class CheckInst {
 				
 			}else if (in.equals("halt") | in.equals("noop")){
 					return true;			
-			}
+			 }else if (in.equals(".fill")){
+			 	return true;
+			 }
 			throw new ArithmeticException("Instruction doesn't exist!");
 	}
 }
@@ -88,41 +126,47 @@ class CheckInstruction {
 			int index = i;
 			String[] l = inst.split("\t");
 			int out = 0;
-			int op = 0;
+			
 			String in = l[1];
+			
 			if (in.equals("lw") | in.equals("sw") | in.equals("beq")){
 				Itype it = new Itype();
 				out = it.itype(l[2],l[3],l[4]);
 				if(in.equals("lw")){
-					op = 2;
+					Proj.op = 2;
 				}else if (in.equals("sw")){
-					op = 3;
+					Proj.op = 3;
 				}else{
-					op = 4;
+					Proj.op = 4;
 				}
 			}else if (in.equals("add") | in.equals("nand")){
 				Rtype rt = new Rtype();
 				out = rt.rtype(l[2],l[3],l[4]);
 				if(in.equals("add")){
-					op = 0;
+					Proj.op = 0;
 				}else{
-					op = 1;
+					Proj.op = 1;
 				}
 			}else if (in.equals("jalr") ){
 				Jtype jt = new Jtype();
 				out = jt.jtype(l[2],l[3]);
-				op = 5;
+				Proj.op = 5;
 			}else if (in.equals("halt") | in.equals("noop")){
 				out = 0;
 				if(in.equals("halt")){
-					op = 6;
+					Proj.op = 6;
 				}else{
-					op = 7;
+					Proj.op = 7;
 				}
+			}else if (in.equals(".fill")){
+				Filltype ft = new Filltype();
+				return ft.filltype(l[2]);
+				
 			}
-		return ((op << 22) + out );
+			return ((Proj.op << 22) + out );				
+			
 	}
-	
+
 }
 class Checkfield{
 	public boolean checkfield(String line) {
@@ -158,12 +202,15 @@ class Seperate {
 }
 
 public class Proj   {
-	int count=0;
-	String[] label = new String[count];
+	static int count=0;
+	static int nowcount=0;
+	static String[] label = new String[count];
+	static int op = 0;
 
 	public static void main(String[] args) {
-		
-		String path = "test1.txt";
+	
+
+		String path = "D:\\project1\\test.txt";
 		File file = new File(path);
 		
 		
@@ -187,7 +234,7 @@ public class Proj   {
 		try {
 			String[] inLabel;
 			String[] cLabel;
-			
+			label = new String[count];
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -217,6 +264,7 @@ public class Proj   {
 				if(x == true){
 					Seperate sep = new Seperate();
 					sep.check(line,i); //if correct field turn to checkInst
+					nowcount++;
 				}else if(x == false){
 					break;
 					//have error exit
@@ -233,4 +281,3 @@ public class Proj   {
 	
 	
 }
-
