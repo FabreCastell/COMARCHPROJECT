@@ -1,14 +1,15 @@
 package com.company;
 import java.io.*;
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args) {
 	// write your code here
-        String memory[] = new String [10] ;
+        String memory[] = new String[1];
         int register[]= new int [8];
-        readFile("MachineCode.txt",memory);
-
-
+        memory = readFile("MachineCode.txt",memory);
+        //for(int i=0;i<memory.length;i++) System.out.println(memory[i]);
         String binaryRegister[] = new String[memory.length];
         int lengthOfBinary[] = new int [memory.length] ;
         System.out.println("Example Run of Simulator\n");
@@ -43,7 +44,7 @@ public class Main {
 
                 lw(binaryRegister[count],register,memory,count);
             } else if(temp.contains("011")){
-                sw(binaryRegister[count],register);
+                sw(binaryRegister[count],register,memory,count);
 
             } else if(temp.contains("100")){
 
@@ -68,10 +69,11 @@ public class Main {
         }
     }
 
-    public static String readFile(String what,String [] n){
+    public static String[] readFile(String what,String [] memory){
         String value = "" ;
+        ArrayList<String> tmp = new ArrayList<String>();
         try {
-            
+            // อ่านไฟล์ชื่อ textfile.txt
             FileInputStream fstream = new FileInputStream(what);
 
             // Get the object of DataInputStream
@@ -79,38 +81,43 @@ public class Main {
             BufferedReader bf = new BufferedReader(new InputStreamReader(instream));
             String line;
 
-            
+            // อ่านไฟล์ทีละบรรทัด
             int i = 0;
+
             while ((line = bf.readLine()) != null) {
                 //System.out.println(line);
                 value = value + "\n" + line ;
-                n[i] = line ;
+
+                tmp.add(line) ;
+
                 i++;
             }
-            
+            // ปิด input stream
             instream.close();
 
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        return value;
+        String[] arr = tmp.toArray(new String[tmp.size()]);
+
+        return arr;
 
     }
 
     public static void write(String what,String x){
         try {
-            
+            // สร้าง object เพื่อใช้เขียนไฟล์ โดยระบุชื่อไฟล์ที่ต้องการสร้าง
             FileWriter writer = new FileWriter(what);
 
-            
+            // สร้าง object เพื่อใช้เขียนข้อมูลลงไปในไฟล์
             BufferedWriter out = new BufferedWriter(writer);
 
-            
+            // เขียนข้อมูลลงไปในไฟล์
             out.write(x);
 
 
-           
+            // ปิดการเขียนไฟล์
             out.close();
 
         } catch (Exception e) {
@@ -140,6 +147,10 @@ public class Main {
         int dxrd = Integer.parseInt(rd, 2);
 
 
+        register [dxrd] = ~(dxrs & dxrt);
+
+
+
     }
     public static void lw(String binaryRegister ,int[]register,String []memory,int count){
         String rs =  binaryRegister.substring(3, 6) ;
@@ -155,7 +166,7 @@ public class Main {
         register[dxrt] = Integer.parseInt(memory[count + dxoffset+dxrs*4]);
 
     }
-    public static void sw(String binaryRegister ,int[]register){
+    public static void sw(String binaryRegister ,int[]register,String []memory,int count){
         String rs =  binaryRegister.substring(3, 6) ;
         String rt =  binaryRegister.substring(6, 9) ;
         String offset =  binaryRegister.substring(9, 25) ;
@@ -163,6 +174,9 @@ public class Main {
         int dxrs = Integer.parseInt(rs, 2);
         int dxrt = Integer.parseInt(rt, 2);
         int dxoffset = Integer.parseInt(offset, 2);
+
+        memory[dxrt] = Integer.toString(register[count + dxoffset+dxrs*4]);
+
     }
     public static int beq(String binaryRegister ,int[]register,int count){
         String rs =  binaryRegister.substring(3, 6) ;

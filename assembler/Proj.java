@@ -194,7 +194,7 @@ class Seperate {
 		//instruction
 		CheckInstruction ins = new CheckInstruction();    
 		int sum = ins.checkInstruction(line,i);
-		System.out.println(sum);
+		//System.out.println(sum);
 	}  	
 }
 
@@ -248,7 +248,7 @@ public class Proj   {
 			br.close();
 			
 			for(int i=0; i<label.length; i++){
-				System.out.println(label[i]);
+				//System.out.println(label[i]);
 			}
 
 		
