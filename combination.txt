@@ -1,0 +1,49 @@
+start	lw	$0	$1	Ninput
+	lw	$0	$2	Rinput
+	lw	$0	$5	stack
+	lw	$0	$6	com
+	jalr	$6	$7
+	halt
+COMBI	beq	$1	$2	if
+	beq	$0	$2	if	
+ELSE	lw	$0	$6	pos1
+	add	$5	$6	$5
+	sw	$5	$1	zero
+	add	$5	$6	$5
+	sw	$5	$2	zero
+	add	$5	$6	$5
+	sw	$5	$7	zero
+	lw	$0	$4	neg1
+	add	$1	$4	$1
+	lw	$0	$6	com
+	jalr	$6	$7
+	lw	$0	$6	pos1
+	add	$5	$6	$5
+	sw	$5	$3	zero
+	add	$2	$4	$2
+	lw	$0	$6	com
+	jalr	$6	$7
+	lw	$5	$6	zero
+	add	$5	$4	$5
+	add	$4	$6	$4
+	lw	$5	$7	zero
+	add	$5	$4	$5
+	lw	$5	$2	zero
+	add	$5	$4	$5
+	lw	$5	$2	zero
+	add	$5	$1	$5
+	jalr	$7	$4
+IF	lw	$0	$3	pos1
+	jalr	$7	$4
+pos1	.fill	1
+neg1	.fill	-1
+Ninput	.fill	N
+Rinput	.fill	R
+zero	.fill	0
+com	.fill	COMBI
+if	.fill	IF
+if1	.fill	IF1
+else	.fill	ELSE
+stack	.fill	
+
+
