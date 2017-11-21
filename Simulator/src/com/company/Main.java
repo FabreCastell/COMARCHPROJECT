@@ -8,7 +8,7 @@ public class Main {
 	// write your code here
         String memory[] = new String[1];
         int register[]= new int [8];
-        memory = readFile("MachineCode.txt",memory);
+        memory = readFile("Multipication.txt",memory);
         //for(int i=0;i<memory.length;i++) System.out.println(memory[i]);
         String binaryRegister[] = new String[memory.length];
         int lengthOfBinary[] = new int [memory.length] ;
@@ -23,14 +23,15 @@ public class Main {
             }
             else binaryRegister[i] = memory[i];
 
-            //System.out.print(binaryRegister[i] + "("); // binary of machine code
-            //System.out.println(binaryRegister[i].length()+")" + "\n"); // length of binary of machince code
+            System.out.print(binaryRegister[i] + "("); // binary of machine code
+            System.out.println(binaryRegister[i].length()+")" + "\n"); // length of binary of machince code
         }
         int count=0 ;
         int instruc =1;
         while (count < binaryRegister.length){
             printState(memory,register,count);
             String temp = new String();
+
             if(binaryRegister[count].length() == 25){
                 temp = binaryRegister[count].substring(0, 3);
             }
@@ -67,6 +68,7 @@ public class Main {
             count++;
             instruc++;
         }
+
     }
 
     public static String[] readFile(String what,String [] memory){
@@ -147,7 +149,7 @@ public class Main {
         int dxrd = Integer.parseInt(rd, 2);
 
 
-        register [dxrd] = ~(dxrs & dxrt);
+        register [dxrd] = ~(register[dxrs] & register[dxrt]);
 
 
 
@@ -163,7 +165,8 @@ public class Main {
         /*System.out.println(dxrs + " dxrs");
         System.out.println(dxrt + " dxrt");
         System.out.println(dxoffset + " dxoffset");*/
-        register[dxrt] = Integer.parseInt(memory[count + dxoffset+dxrs*4]);
+
+        register[dxrt] = Integer.parseInt(memory[dxoffset+register[dxrs]]);
 
     }
     public static void sw(String binaryRegister ,int[]register,String []memory,int count){
