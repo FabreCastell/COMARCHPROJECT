@@ -6,6 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
 	// write your code here
+        String result ="";
         String memory[] = new String[1];
         int register[]= new int [8];
         memory = readFile("Multipication.txt",memory);
@@ -23,8 +24,8 @@ public class Main {
             }
             else binaryRegister[i] = memory[i];
 
-            System.out.print(binaryRegister[i] + "("); // binary of machine code
-            System.out.println(binaryRegister[i].length()+")" + "\n"); // length of binary of machince code
+//            System.out.print(binaryRegister[i] + "("); // binary of machine code
+//            System.out.println(binaryRegister[i].length()+")" + "\n"); // length of binary of machince code
         }
         int count=0 ;
         int instruc =1;
@@ -68,7 +69,7 @@ public class Main {
             count++;
             instruc++;
         }
-
+        write("result.txt",result);
     }
 
     public static String[] readFile(String what,String [] memory){
@@ -178,7 +179,7 @@ public class Main {
         int dxrt = Integer.parseInt(rt, 2);
         int dxoffset = Integer.parseInt(offset, 2);
 
-        memory[dxrt] = Integer.toString(register[count + dxoffset+dxrs*4]);
+        memory[register[dxrs] + dxoffset] = Integer.toString(register[dxrt]);
 
     }
     public static int beq(String binaryRegister ,int[]register,int count){
@@ -201,8 +202,8 @@ public class Main {
 
         int dxrs = Integer.parseInt(rs, 2);
         int dxrt = Integer.parseInt(rt, 2);
-
-        return dxrs;
+        register[dxrt] = count++ ; 
+        return register[dxrs];
     }
     public static void printState(String []memory,int []register,int count){
 
