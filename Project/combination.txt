@@ -1,0 +1,45 @@
+start	lw	0	1	Ninput  //reg1 = n = 7
+	lw	0	2	Rinput      //reg2 = r = 3
+	lw	0	5	stack       //reg5 = stack address
+	lw	0	6	cccc        //reg6 = function address
+	jalr	6	7           //jump to the function, reg7 is now 5
+	halt                    //stop program
+dddd	beq	1	2	ffff    //if reg1 = reg2 go to if case
+	beq	0	2	ffff        //if reg2 = 0 go to if case
+eeee	lw	0	6	pos1    //reg6 = 1
+	add	5	6	5           //add stack
+	sw	5	1	0           //store reg1    
+	add	5	6	5           //add stack
+	sw	5	2	0           //store reg2    
+	add	5	6	5           //add stack
+	sw	5	7	0           //store return address (first is to halt, others are to previous function)  
+	lw	0	4	neg1        //reg4 = -1
+	add	1	4	1           //n = n - 1
+	lw	0	6	cccc        //reg6 = go to function
+	jalr	6	7           //jump to function
+	lw	0	6	pos1        //reg6 = 1
+	add	5	6	5           //add stack
+	sw	5	3	0           //store result  
+	lw  0   4   neg1        //reg4 = -1
+	add	2	4	2           //r = r-1
+	lw	0	6	cccc        //reg6 = go to function
+	jalr	6	7           //jump to function
+	lw	5	6	0           //reg6 = result from previous   
+	lw  0   4   neg1        //reg4 = -1
+	add	5	4	5           //decrease stack
+	add	3	6	3           //result += reg6(result from stack)
+	lw	5	7	0           //load return address   
+	add	5	4	5
+	lw	5	2	0           //load r   
+	add	5	4	5
+	lw	5	1	0           //load n   
+	add	5	4	5
+	jalr	7	4
+ffff	lw	0	3	pos1    //result = 1
+	jalr	7	4           //jump back
+pos1	.fill	1
+neg1	.fill	-1
+Ninput	.fill	7
+Rinput	.fill	3
+cccc	.fill	6
+stack	.fill	44
