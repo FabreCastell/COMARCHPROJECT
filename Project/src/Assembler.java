@@ -16,8 +16,8 @@ class Rtype {
 class CheckLabel{
     public static int checkLabel(String c) {
 
-        for (int i = 0; i < Proj.count; i++) {
-            String[] temp = Proj.label[i].split("\t");
+        for (int i = 0; i < Assembler.count; i++) {
+            String[] temp = Assembler.label[i].split("\\s+");
             //System.out.println(temp[0]);
             if (c.equals(temp[0]) && temp[1].equals(".fill")) {
                 return killFill(temp[2]);
@@ -32,8 +32,8 @@ class CheckLabel{
     }
 
     public static int lwLabal(String c){
-        for (int i = 0; i < Proj.count; i++) {
-            String[] temp = Proj.label[i].split("\t");
+        for (int i = 0; i < Assembler.count; i++) {
+            String[] temp = Assembler.label[i].split("\\s+");
             //System.out.println(i);
             if(c.equals(temp[0])){
                 //System.out.println(i);
@@ -46,8 +46,8 @@ class CheckLabel{
 
 
     public static int killFill(String c){
-        for(int i=0; i<Proj.count; i++) {
-            String[] temp = Proj.label[i].split("\t");
+        for(int i = 0; i< Assembler.count; i++) {
+            String[] temp = Assembler.label[i].split("\\s+");
             if(c.equals(temp[0])){
                 //System.out.println(i);
                 return i;
@@ -86,8 +86,8 @@ class Itype {
         if(isInteger(c)){
             return (Integer.parseInt(a) << 19 ) + (Integer.parseInt(b) << 16 ) + (Integer.parseInt(c));
         }else {
-            if (Proj.op == 4) {
-                return (Integer.parseInt(a) << 19) + (Integer.parseInt(b) << 16) + getMinus(CheckLabel.checkLabel(c) - Proj.nowcount - 1);
+            if (Assembler.op == 4) {
+                return (Integer.parseInt(a) << 19) + (Integer.parseInt(b) << 16) + getMinus(CheckLabel.checkLabel(c) - Assembler.nowcount - 1);
             } else {
                 //System.out.println(Proj.op);
                 return (Integer.parseInt(a) << 19) + (Integer.parseInt(b) << 16) + CheckLabel.lwLabal(c);
@@ -118,8 +118,8 @@ class Itype {
 class CheckInst {
     public boolean checkInst(String inst) {
         //int index = i;
-        String[] l = inst.split("\t");
-        int out;
+        String[] l = inst.split("\\s+");
+
         String in = l[1];
         if (in.equals("lw") | in.equals("sw") | in.equals("beq")){
             if(l[2] != null & l[3] != null & l[4] != null){
@@ -149,7 +149,7 @@ class CheckInst {
 class CheckInstruction {
     public int checkInstruction(String inst , int i) {
         int index = i;
-        String[] l = inst.split("\t");
+        String[] l = inst.split("\\s+");
         int out = 0;
 
         String in = l[1];
@@ -157,37 +157,37 @@ class CheckInstruction {
         if (in.equals("lw") | in.equals("sw") | in.equals("beq")){
             Itype it = new Itype();
             if(in.equals("lw")){
-                Proj.op = 2;
+                Assembler.op = 2;
             }else if (in.equals("sw")){
-                Proj.op = 3;
+                Assembler.op = 3;
             }else{
-                Proj.op = 4;
+                Assembler.op = 4;
             }
             out = it.itype(l[2],l[3],l[4]);
         }else if (in.equals("add") | in.equals("nand")){
             Rtype rt = new Rtype();
             if(in.equals("add")){
-                Proj.op = 0;
+                Assembler.op = 0;
             }else{
-                Proj.op = 1;
+                Assembler.op = 1;
             }out = rt.rtype(l[2],l[3],l[4]);
 
         }else if (in.equals("jalr") ){
             Jtype jt = new Jtype();
-            Proj.op = 5;
+            Assembler.op = 5;
             out = jt.jtype(l[2],l[3]);
         }else if (in.equals("halt") | in.equals("noop")){
             out = 0;
             if(in.equals("halt")){
-                Proj.op = 6;
+                Assembler.op = 6;
             }else{
-                Proj.op = 7;
+                Assembler.op = 7;
             }
         }else if (in.equals(".fill")){
             Filltype ft = new Filltype();
             return ft.filltype(l[2]);
         }
-        return ((Proj.op << 22) + out );
+        return ((Assembler.op << 22) + out );
 
     }
 
@@ -226,16 +226,16 @@ class Seperate {
     }
 }
 
-public class Proj {
+public class Assembler {
     static int count=0;
     static int nowcount=0;
     static String[] label = new String[count];
     static int op = 0;
 
     public static void main(String[] args) throws IOException{
-        String path = "test.txt";
+        String path = "combination.txt";
         File file = new File(path);
-        String out = "testOut.txt";
+        String out = "combinationOut.txt";
         File fileout = new File (out);
         int sum=0;
 
@@ -264,10 +264,10 @@ public class Proj {
             String line;
             while ((line = br.readLine()) != null) {
                 label[num] = line;
-                cLabel = label[num].split("\t");
+                cLabel = label[num].split("\\s+");
 
                 for(int i=0; i<num; i++){
-                    inLabel = label[i].split("\t");
+                    inLabel = label[i].split("\\s+");
                     if(inLabel[0].equals(cLabel[0]) && !cLabel[0].equals("")){
                         throw new ArithmeticException("Existed label!");
                     }
@@ -283,7 +283,7 @@ public class Proj {
             br = new BufferedReader(new FileReader(file));
             int i=0;
             while ((line = br.readLine()) != null) {
-                //String[] name = line.split("\t");
+                //String[] name = line.split("\\s+");
                 Checkfield chf = new Checkfield();
                 boolean x = chf.checkfield(line); //check field
                 if(x == true){

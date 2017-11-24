@@ -1,4 +1,4 @@
-start	lw	0	1	Ninput  //reg1 = n = 7
+    lw  0   1   Ninput      //reg1 = n = 7
 	lw	0	2	Rinput      //reg2 = r = 3
 	lw	0	5	stack       //reg5 = stack address
 	lw	0	6	cccc        //reg6 = function address

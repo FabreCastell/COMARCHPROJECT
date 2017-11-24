@@ -3,7 +3,7 @@ package com.company;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Main {
+public class Simulator {
 
     public static void main(String[] args) {
 	// write your code here
@@ -11,7 +11,7 @@ public class Main {
         String[] memory = new String[65536];
         String file[] = new String[1];
         int register[]= new int [8];
-        file = readFile("multi.txt",file);
+        file = readFile("combinationOut.txt",file);
 
         for (int i=0;i<file.length;i++){
             memory[i] = file[i];
@@ -70,7 +70,7 @@ public class Main {
                 System.out.println("machine halted");
                 System.out.println("total of "+ instruc +" instructions executed\n" +
                         "final state of machine:\n");
-                count++;
+                //count++;
                 printState(memory,register,count,file.length);
                 break; // halt
 
